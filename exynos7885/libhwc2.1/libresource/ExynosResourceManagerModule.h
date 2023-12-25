@@ -21,8 +21,7 @@
 class ExynosResourceManagerModule : public ExynosResourceManager {
     public:
         ExynosResourceManagerModule(ExynosDevice* device);
-        virtual ~ExynosResourceManagerModule();
-        virtual int32_t checkExceptionScenario(ExynosDisplay *display);
+        ~ExynosResourceManagerModule();
 };
 
 #endif // _EXYNOS_RESOURCE_MANAGER_MODULE_H

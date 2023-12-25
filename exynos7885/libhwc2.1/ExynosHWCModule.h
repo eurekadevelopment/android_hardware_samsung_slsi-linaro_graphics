@@ -30,13 +30,12 @@
 #define DP_CABLE_STATE_NAME "/sys/devices/platform/%s/extcon/extcon0/cable.%d/state"
 #define BRIGHTNESS_NODE_BASE "/sys/class/backlight/panel/brightness"
 #define MAX_BRIGHTNESS_NODE_BASE "/sys/class/backlight/panel/max_brightness"
-#define FORCE_DISABLE_DR
-
-#define G2D_BASE_PPC_ROT    1.2
-#define G2D_BASE_PPC        1.4
-#define G2D_BASE_PPC_COLORFILL 1.9
 
 #define IDMA(x) static_cast<decon_idma_type>(x)
+
+#define DEDICATED_CHANNEL_TYPE MPP_DPP_G
+#define DEDICATED_CHANNEL_INDEX 0
+#define USE_DEDICATED_TOP_WINDOW
 
 enum {
     HWC_DISPLAY_NONE_BIT = 0
@@ -54,7 +53,14 @@ struct exynos_mpp_t {
     uint32_t pre_assign_info;
 };
 
-const dpp_channel_map_t IDMA_CHANNEL_MAP[] = {};
+const dpp_channel_map_t IDMA_CHANNEL_MAP[] = {
+    {MPP_DPP_G,      0, IDMA_G0,   IDMA(0)},
+    {MPP_DPP_G,      1, IDMA_G1,   IDMA(1)},
+    {MPP_DPP_VG,     0, IDMA_VG0,  IDMA(2)},
+    {MPP_DPP_GF,     0, IDMA_GF,   IDMA(3)},
+    {MPP_P_TYPE_MAX, 0, ODMA_WB,   IDMA(7)}, // not idma but..
+    {static_cast<mpp_phycal_type_t>(MAX_DECON_DMA_TYPE), 0, MAX_DECON_DMA_TYPE, IDMA(8)}
+};
 
 #define MAX_NAME_SIZE   32
 struct exynos_display_t {
@@ -65,14 +71,11 @@ struct exynos_display_t {
     char vsync_node_name[MAX_NAME_SIZE];
 };
 
-#define PRIMARY_MAIN_BASE_WIN   2
-#define EXTERNAL_MAIN_BASE_WIN  4
+#define PRIMARY_MAIN_EXTERNAL_WINCNT   2
+#define EXTERNAL_MAIN_EXTERNAL_WINCNT  4
 
 #define DISPLAY_MODE_MASK_LEN    8
 #define DISPLAY_MODE_MASK_BIT    0xff
-
-#define G2D_MAX_SRC_NUM 7
-
 enum {
     DISPLAY_MODE_PRIMARY_MAIN = 0,  /* This is default mode */
     DISPLAY_MODE_EXTERNAL_MAIN,
@@ -83,7 +86,7 @@ enum {
  * This is base window index of primary display for each display mode.
  * External display base window is always 0
  */
-const uint32_t PRIMARY_DISP_BASE_WIN[] = {PRIMARY_MAIN_BASE_WIN, EXTERNAL_MAIN_BASE_WIN};
+const uint32_t EXTERNAL_WINDOW_COUNT[] = {PRIMARY_MAIN_EXTERNAL_WINCNT, EXTERNAL_MAIN_EXTERNAL_WINCNT};
 
 #define EXTERNAL_MAIN_DISPLAY_START_BIT (DISPLAY_MODE_MASK_LEN * DISPLAY_MODE_EXTERNAL_MAIN)
 enum {
@@ -93,23 +96,17 @@ enum {
 };
 
 const exynos_mpp_t AVAILABLE_OTF_MPP_UNITS[] = {
-/*  Due to an unhandled quirk with G0, it can't be used. See the first condition
-    in the decon_check_limitation() function in the decon kernel driver, which forbids
-    problematic use of IDMA_G0 for anything other than "WIN3" while that's exactly what
-    happens, not known how to prevent it at userspace in HWC like the proprietary blob
-    implementation does. */
-/*  {MPP_DPP_G, MPP_LOGICAL_DPP_G, "DPP_G0", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
-    {MPP_DPP_G, MPP_LOGICAL_DPP_G, "DPP_G1", 1, 0, HWC_DISPLAY_PRIMARY_BIT}, */
-    {MPP_DPP_G, MPP_LOGICAL_DPP_G, "DPP_G1", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
+    {MPP_DPP_G, MPP_LOGICAL_DPP_G, "DPP_G0", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
+    {MPP_DPP_G, MPP_LOGICAL_DPP_G, "DPP_G1", 1, 0, HWC_DISPLAY_PRIMARY_BIT},
     {MPP_DPP_VG, MPP_LOGICAL_DPP_VG, "DPP_VG0", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
-    {MPP_DPP_GF, MPP_LOGICAL_DPP_GF, "DPP_GF", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
+    {MPP_DPP_GF, MPP_LOGICAL_DPP_GF, "DPP_GF", 0, 0, HWC_DISPLAY_PRIMARY_BIT}
 };
 
 const exynos_mpp_t AVAILABLE_M2M_MPP_UNITS[] = {
     {MPP_MSC, MPP_LOGICAL_MSC, "MSC0_PRI", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
     {MPP_G2D, MPP_LOGICAL_G2D_YUV, "G2D0-YUV_PRI", 0, 0, HWC_DISPLAY_PRIMARY_BIT},
     {MPP_G2D, MPP_LOGICAL_G2D_RGB, "G2D0-RGB_PRI", 0, 1, HWC_DISPLAY_PRIMARY_BIT},
-    {MPP_G2D, MPP_LOGICAL_G2D_COMBO, "G2D0-RGB_COMBO", 0, 2, HWC_DISPLAY_VIRTUAL_BIT},
+    {MPP_G2D, MPP_LOGICAL_G2D_COMBO, "G2D0-RGB_COMBO", 0, 2, HWC_DISPLAY_VIRTUAL_BIT}
 };
 
 const exynos_display_t AVAILABLE_DISPLAY_UNITS[] = {

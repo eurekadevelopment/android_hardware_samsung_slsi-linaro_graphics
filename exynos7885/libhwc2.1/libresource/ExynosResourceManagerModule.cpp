@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cutils/properties.h>
-
 #include "ExynosResourceManagerModule.h"
 #include "ExynosMPPModule.h"
 #define CHIP_ID_PATH "/sys/devices/system/chip-id/revision"
@@ -65,24 +63,4 @@ ExynosResourceManagerModule::ExynosResourceManagerModule(ExynosDevice* device)
 
 ExynosResourceManagerModule::~ExynosResourceManagerModule()
 {
-}
-
-int32_t ExynosResourceManagerModule::checkExceptionScenario(ExynosDisplay *display)
-{
-    /* Check whether camera preview is running */
-    char value[PROPERTY_VALUE_MAX];
-    bool preview;
-    property_get("persist.vendor.sys.camera.preview", value, "0");
-    preview = !!atoi(value);
-
-    /* when camera is operating, HWC can't use G2D */
-    for (uint32_t i = 0; i < mM2mMPPs.size(); i++) {
-        if (mM2mMPPs[i]->mPhysicalType != MPP_G2D) continue;
-        if (preview)
-            mM2mMPPs[i]->mDisableByUserScenario = true;
-        else
-            mM2mMPPs[i]->mDisableByUserScenario = false;
-    }
-
-    return NO_ERROR;
 }

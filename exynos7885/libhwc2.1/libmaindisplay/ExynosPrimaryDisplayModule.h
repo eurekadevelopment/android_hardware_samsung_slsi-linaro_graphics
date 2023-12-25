@@ -18,7 +18,6 @@
 
 #include "ExynosDisplay.h"
 #include "ExynosPrimaryDisplay.h"
-#include "ExynosHWCDebug.h"
 
 class ExynosPrimaryDisplayModule : public ExynosPrimaryDisplay {
     public:

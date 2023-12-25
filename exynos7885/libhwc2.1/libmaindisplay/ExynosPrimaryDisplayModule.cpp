@@ -28,8 +28,8 @@ ExynosPrimaryDisplayModule::~ExynosPrimaryDisplayModule () {
 void ExynosPrimaryDisplayModule::usePreDefinedWindow(bool use)
 {
     if (use) {
-        mBaseWindowIndex = PRIMARY_DISP_BASE_WIN[mDevice->mDisplayMode];
-        mMaxWindowNum = mDisplayInterface->getMaxWindowNum() - PRIMARY_DISP_BASE_WIN[mDevice->mDisplayMode];
+        mBaseWindowIndex += EXTERNAL_WINDOW_COUNT[mDevice->mDisplayMode];
+        mMaxWindowNum -= EXTERNAL_WINDOW_COUNT[mDevice->mDisplayMode];
     } else {
         mBaseWindowIndex = 0;
         mMaxWindowNum = mDisplayInterface->getMaxWindowNum();
@@ -53,9 +53,8 @@ int32_t ExynosPrimaryDisplayModule::validateWinConfigData()
                 if ((mppType == MPP_DPP_G)  ||
                     (mppType == MPP_DPP_GF) ||
                     (mppType == MPP_DPP_VG)) {
-                    DISPLAY_LOGE("WIN_CONFIG error: invalid assign id : %zu,  s_w : %d, d_w : %d, s_h : %d, d_h : %d, mppType : %d", i,
-                            config.src.w, config.dst.w, config.src.h, config.dst.h,
-                            mppType);
+                    DISPLAY_LOGE("WIN_CONFIG error: invalid assign id : %zu,  s_w : %d, d_w : %d, s_h : %d, d_h : %d, mppType : %d",
+                            i, config.src.w, config.dst.w, config.src.h, config.dst.h, mppType);
                     configInvalid = true;
                 }
             }

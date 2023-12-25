@@ -23,7 +23,6 @@ class ExynosExternalDisplayModule : public ExynosExternalDisplay {
     public:
         ExynosExternalDisplayModule(uint32_t index, ExynosDevice *device);
         ~ExynosExternalDisplayModule();
-        virtual int32_t validateWinConfigData();
 };
 
 #endif

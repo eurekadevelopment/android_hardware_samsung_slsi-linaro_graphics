@@ -17,7 +17,6 @@
 #include "ExynosMPPModule.h"
 #include "ExynosHWCDebug.h"
 #include "ExynosResourceManager.h"
-#include "ExynosResourceRestriction.h"
 
 ExynosMPPModule::ExynosMPPModule(ExynosResourceManager* resourceManager,
         uint32_t physicalType, uint32_t logicalType, const char *name,

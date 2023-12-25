@@ -22,7 +22,8 @@
 class ExynosDeviceModule : public ExynosDevice {
     public:
         ExynosDeviceModule();
-        ~ExynosDeviceModule();
+        virtual ~ExynosDeviceModule();
+
 };
 
 #endif
