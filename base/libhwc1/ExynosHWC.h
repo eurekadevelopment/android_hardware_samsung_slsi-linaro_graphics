@@ -66,7 +66,6 @@
 #include "exynos_format.h"
 #include "exynos_v4l2.h"
 #include "ExynosHWCModule.h"
-#include "ExynosRect.h"
 #include "videodev2.h"
 
 #if defined(DUAL_VIDEO_OVERLAY_SUPPORT)
